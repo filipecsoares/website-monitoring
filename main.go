@@ -6,7 +6,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -48,8 +50,10 @@ func startMonitoring() {
 		}
 		if resp.StatusCode == 200 {
 			fmt.Println("Site:", site, "Successful!")
+			saveLog(site, true)
 		} else {
 			fmt.Println("Something went wrong on site:", site, "Status Code:", resp.StatusCode)
+			saveLog(site, false)
 		}
 	}
 }
@@ -77,4 +81,14 @@ func readWebsiteFile() []string {
 	}
 	file.Close()
 	return sites
+}
+
+func saveLog(site string, online bool) {
+	file, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	file.WriteString(time.Now().Format("02/01/2006 15:04:05") + " - " + site + " - Online: " + strconv.FormatBool(online) + "\n")
+	file.Close()
 }
