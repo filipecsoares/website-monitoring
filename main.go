@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -61,6 +62,12 @@ func startMonitoring() {
 func startLogging() {
 	fmt.Println()
 	fmt.Println("Logging")
+	file, err := ioutil.ReadFile("log.txt")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(file))
 }
 
 func readWebsiteFile() []string {
